@@ -1,0 +1,21 @@
+{
+  "name": "MusicChoice for Channels",
+  "version": "0.0.1",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "axios": "^0.21.1",
+    "cheerio": "^1.0.0-rc.3",
+    "yargs": "^15.3.1"
+  },
+  "dependencies": {
+    "puppeteer": "^3.3.0",
+    "unirest": "^0.6.0"
+  }
+}
