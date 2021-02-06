@@ -266,7 +266,7 @@ let baseplayerurl = "https://webplayer.musicchoice.com/?_branch_match_id=7529949
   }
   ];
 
-    const browser = await p.launch({headless:false,
+    const browser = await p.launch({headless:true,
         executablePath: '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
     });
     const page = await browser.newPage();
