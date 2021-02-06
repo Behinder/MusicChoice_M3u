@@ -7,6 +7,10 @@ TODO:
 [x] Fix capturing network url requests
 - Find another URL for TVE authorisation simulating mobile device
 
+Limitations:
+- All links are valid only for ~4 hours
+- No Artist/Track display information
+
 Requirements:
 - NodeJS
 - Google Chrome installed
