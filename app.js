@@ -8,7 +8,7 @@ require('dotenv').config();
 
 
 function writeM3Uline(channelnumber,tvguideid,channelname,streamurl) {
-str = "#EXTINF:"+channelnumber+" tvg-chno=\""+channelnumber+"\" grouptitle='Music Choice' tvg-id=\""+tvguideid+"\" tvc-guide-title=\""+tvguideid+"\" channel-id=\""+channelname+"\" "+channelname+"\n";
+str = "#EXTINF:-1 tvg-chno=\""+channelnumber+"\" grouptitle='Music Choice' tvg-id=\""+tvguideid+"\" tvc-guide-title=\""+tvguideid+"\" channel-id=\""+channelname+"\","+channelname+"\n";
 fs.appendFileSync("musicchoice.m3u",str);
 fs.appendFileSync("musicchoice.m3u",streamurl+"\n"); 
 
