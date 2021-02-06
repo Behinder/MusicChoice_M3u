@@ -1,8 +1,7 @@
 # MusicChoice M3U playlist generator for DirecTV
 
-Basic scaffolding. If someone is able to continue work on this feel free to fork.
+Almost working playlist generator of MusicChoice channels.
 
 TODO:
-
+- Fix capturing network url requests
 - Find another URL for TVE authorisation simulating mobile device  
-- Generator of M3U file  
