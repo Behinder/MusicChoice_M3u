@@ -270,9 +270,7 @@ let baseplayerurl = "https://webplayer.musicchoice.com/?_branch_match_id=7529949
         executablePath: '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
     });
     const page = await browser.newPage();
-    // await page.goto("https://musicchoice.com",{
-    //     waitUntil:"networkidle2",
-    // });
+ 
 var dtvlogin ="https://idp.dtvce.com/entitlementlogin/login.do?siteId=IDP_MusicChoice_C01&providerName=IDP_MusicChoice_C01&stateInfo=eJwFwdmiQkAAANAP8iDKqIf7IEuMoZHdmyxD9m2kr7%2FnCBqKzg9h7mD2t8Y0HUJYa%2Fwkgrv%2Bg68GabsikUt6bRyo3XyxTlQFtfnqy5Xb9Z%2BeBqdEJy2wUMFU0NVkw6XZaXe21rqr9sQ%2FT6OFwO0eR77jegeXwyzZaCtknlMSq51s7Ph6zoZm96UVSGPrQGwCrlUtpMREjTRWofysEh2QPPIfuwJ444o76YHn%2B17BefOGV2h8%2B%2FfB15Ij7XnkqtnIqUgVikCKlExYgmSZu7fzXSgzy3c3wdqyG7%2FwgugnuSDdbVforS%2FJEZvhns%2FF3JZQelPaKSnHyfrIVb4eJ94x4DMbryKpv1VKxEOah1Hszelh4gUzorm8B2mTyWbK2D5%2FFRiEF1i%2FZoaLct%2B78J3QIwZkIHyw2vlqBT9EVfMDYnypfUCqsuEV4ZPap6LX3OwZNj0PSFk1OVXMsuoMiHFtAUbWcg4EbhhxBZi8JjF%2BysNnsy9LTQsoIZics14bYlSrm4KH08ifynhvS2IPgEOFbYuxnHEbGLL3UOurpW0b4VY1WOQcx7F4KwoawmyeZ%2BdgKK9enzUeVJb8%2Ff0D%2Fa%2B2Vw%3D%3D";
 // await page.setUserAgent('Mozilla/5.0 (iPad; CPU OS 12_4 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148');
 await page.goto(dtvlogin);
@@ -287,27 +285,23 @@ await page.$eval(
   await page.click("#loginSubmitId");
   await page.waitForNavigation();
   
-
-
-
 let streamurl = "";
-
-  
-
+let index =0;
 console.log("Getting channel links\n");
   await page.setRequestInterception(true);
   page.on('request', async interceptedRequest => {
     if (interceptedRequest.url().includes("m3u8")) {
-        console.log("request found");
+        console.log("request found "+index);
          fs.writeFileSync("request.txt",interceptedRequest.url());
          streamurl = interceptedRequest.url();
          console.log("Request intercepted="+streamurl);
+         index++;
        interceptedRequest.abort();
     }
     else
       interceptedRequest.continue();
     });
-    
+
   for (const ch of channel_info) {
    const l = ch.link;
    const n = ch.name;
@@ -315,13 +309,12 @@ console.log("Getting channel links\n");
    console.log("Checking channel "+number);
    console.log("Trying url "+baseplayerurl+l);  
   //  await page.waitForNavigation();
-  // intercepting requests in a loop
   
   try {
   
 
-    await page.goto(baseplayerurl+l,{waitUntil:"networkidle2"});
-    await sleep(10000).then(()=>{
+    await page.goto(baseplayerurl+l,{waitUntil:"domcontentloaded"});
+    await sleep(20000).then(()=>{
      console.log("Writing to M3U file"); 
     });
     writeM3Uline(number,n,n,streamurl);
