@@ -3,6 +3,9 @@ const axios = require('axios');
 const p = require('puppeteer');
 const util = require('util');
 const sleep = util.promisify(setTimeout);
+require('dotenv').config();
+
+
 
 function writeM3Uline(channelnumber,tvguideid,channelname,streamurl) {
 str = "#EXTINF:"+channelnumber+" tvg-chno=\""+channelnumber+"\" grouptitle='Music Choice' tvg-id=\""+tvguideid+"\" tvc-guide-title=\""+tvguideid+"\" channel-id=\""+channelname+"\" "+channelname+"\n";
@@ -16,22 +19,22 @@ fs.appendFileSync("musicchoice.m3u",streamurl+"\n");
 (async () => {
 fs.writeFileSync("musicchoice.m3u","#EXTM3U\n");
 
+let dtvemail = process.env.dtvemail;
+let dtvpass = process.env.dtvpass;
 
-let dtvemail = "";
-let dtvpass = "";
 let baseplayerurl = "https://webplayer.musicchoice.com/?_branch_match_id=752994999252840127&utm_source=Website&utm_campaign=Everyday&utm_medium=marketing";
     var channel_info = [
-    {"link":"#channel/228/couch-fest-2020",
-  "number":"228",
-  "name":"MC Couch Fest 2020 "
-  },
-    {"link":"#channel/602/hit-list",
-  "number":"602",
-  "name":"MC Hit List"
-  },
+  //   {"link":"#channel/228/couch-fest-2020",
+  // "number":"228",
+  // "name":"MC Couch Fest 2020 "
+  // },
+  //   {"link":"#channel/602/hit-list",
+  // "number":"602",
+  // "name":"MC Hit List"
+  // },
     {"link":"#channel/605/hiphop-and-rb",
   "number":"605",
-  "name":"MC Hiphop & R&B "
+  "name":"MC Hiphop & R&B"
   },
   //   {"link":"#channel/662/teen-beats",
   // "number":"662",
@@ -289,20 +292,22 @@ await page.$eval(
 
 let streamurl = "";
 
+  
+
+console.log("Getting channel links\n");
   await page.setRequestInterception(true);
   page.on('request', async interceptedRequest => {
     if (interceptedRequest.url().includes("m3u8")) {
-        
-        // console.log(interceptedRequest);
+        console.log("request found");
          fs.writeFileSync("request.txt",interceptedRequest.url());
          streamurl = interceptedRequest.url();
+         console.log("Request intercepted="+streamurl);
        interceptedRequest.abort();
     }
     else
       interceptedRequest.continue();
-  });
-
-console.log("Getting channel links\n");
+    });
+    
   for (const ch of channel_info) {
    const l = ch.link;
    const n = ch.name;
@@ -310,9 +315,13 @@ console.log("Getting channel links\n");
    console.log("Checking channel "+number);
    console.log("Trying url "+baseplayerurl+l);  
   //  await page.waitForNavigation();
+  // intercepting requests in a loop
+  
   try {
+  
+
     await page.goto(baseplayerurl+l,{waitUntil:"networkidle2"});
-    await sleep(2000).then(()=>{
+    await sleep(10000).then(()=>{
      console.log("Writing to M3U file"); 
     });
     writeM3Uline(number,n,n,streamurl);
