@@ -2,6 +2,7 @@ const fs = require('fs');
 const axios = require('axios');
 const p = require('puppeteer');
 const util = require('util');
+const { command } = require('yargs');
 const sleep = util.promisify(setTimeout);
 require('dotenv').config();
 
@@ -13,7 +14,12 @@ fs.appendFileSync("musicchoice.m3u",str);
 fs.appendFileSync("musicchoice.m3u",streamurl+"\n"); 
 
 }
-
+function generateRestreamCommand(streamurl,channelnumber,icehost,iceuser,icepass,iceport) {
+  var command = "ffmpeg -re -i "+streamurl+"-map 0:2 -c:a copy -content-type \"audio/aac\" -f adts icecast://"+iceuser+":"+icepass+"@"+icehost+":"+iceport+"/mc"+channelnumber+".aac & \n";
+  command = command.replace("&","\&");
+  command = command.replace("=","\=");
+  return command;
+}
 
 
 (async () => {
@@ -21,6 +27,11 @@ fs.writeFileSync("musicchoice.m3u","#EXTM3U\n");
 
 let dtvemail = process.env.dtvemail;
 let dtvpass = process.env.dtvpass;
+// if you generate audio for Icecast you can fill also your server credentials in .env
+let icecastlogin = process.env.iceadmin;
+let icecastpass = process.env.icepass;
+let icehost = process.env.host;
+let port = process.env.port;
 
 let baseplayerurl = "https://webplayer.musicchoice.com/?_branch_match_id=752994999252840127&utm_source=Website&utm_campaign=Everyday&utm_medium=marketing";
     var channel_info = [
@@ -64,14 +75,14 @@ let baseplayerurl = "https://webplayer.musicchoice.com/?_branch_match_id=7529949
   // "number":"608",
   // "name":"MC Light Classical"
   // },
-  //   {"link":"#channel/653/rock",
-  // "number":"653",
-  // "name":"MC Rock"
-  // },
-  //   {"link":"#channel/607/smooth-jazz",
-  // "number":"607",
-  // "name":"MC Smooth Jazz"
-  // },
+    {"link":"#channel/653/rock",
+  "number":"653",
+  "name":"MC Rock"
+  },
+    {"link":"#channel/607/smooth-jazz",
+  "number":"607",
+  "name":"MC Smooth Jazz"
+  },
   //   {"link":"#channel/603/todays-country",
   // "number":"603",
   // "name":"MC Today's Country"
@@ -196,10 +207,10 @@ let baseplayerurl = "https://webplayer.musicchoice.com/?_branch_match_id=7529949
   // "number":"655",
   // "name":"MC Blues"
   // },
-  //   {"link":"#channel/780/movie-scores",
-  // "number":"780",
-  // "name":"MC Movie Scores"
-  // },
+    {"link":"#channel/780/movie-scores",
+  "number":"780",
+  "name":"MC Movie Scores"
+  },
   //   {"link":"#channel/771/broadway",
   // "number":"771",
   // "name":"MC Broadway"
@@ -232,10 +243,10 @@ let baseplayerurl = "https://webplayer.musicchoice.com/?_branch_match_id=7529949
   // "number":"784",
   // "name":"MC Workout"
   // },
-  //   {"link":"#channel/781/retro-workout",
-  // "number":"781",
-  // "name":"MC Retro Workout"
-  // },
+    {"link":"#channel/781/retro-workout",
+  "number":"781",
+  "name":"MC Retro Workout"
+  },
   //   {"link":"#channel/1224/mc-workout-cardio",
   // "number":"1224",
   // "name":"MC Workout Cardio"
@@ -263,7 +274,51 @@ let baseplayerurl = "https://webplayer.musicchoice.com/?_branch_match_id=7529949
     {"link":"#channel/642/70s",
   "number":"642",
   "name":"MC 70s"
-  }
+  },
+  {"link":"#vc/176/learn-play","name":"learn-play","number":"176"},
+{"link":"#vc/100/hit-list","name":"hit-list","number":"100"},
+// {"link":"#vc/106/hiphop-and-rb","name":"hiphop-and-rb","number":"106"},
+{"link":"#vc/118/teen-beats","name":"teen-beats","number":"118"},
+// {"link":"#vc/121/todays-country","name":"todays-country","number":"121"},
+{"link":"#vc/133/pop-hits","name":"pop-hits","number":"133"},
+{"link":"#vc/1104/music-choice-max","name":"music-choice-max","number":"1104"},
+// {"link":"#vc/132/pop-country","name":"pop-country","number":"132"},
+// {"link":"#vc/140/90s","name":"90s","number":"140"},
+// {"link":"#vc/124/rb-soul","name":"rb-soul","number":"124"},
+// {"link":"#vc/138/rock","name":"rock","number":"138"},
+// {"link":"#vc/121/todays-country","name":"todays-country","number":"121"},
+// {"link":"#vc/132/pop-country","name":"pop-country","number":"132"},
+// {"link":"#vc/1115/country-hits","name":"country-hits","number":"1115"},
+// {"link":"#vc/123/pop-latino","name":"pop-latino","number":"123"},
+// {"link":"#vc/128/musica-urbana","name":"musica-urbana","number":"128"},
+// {"link":"#vc/137/tropicales","name":"tropicales","number":"137"},
+// {"link":"#vc/131/mexicana","name":"mexicana","number":"131"},
+// {"link":"#vc/122/alternative","name":"alternative","number":"122"},
+// {"link":"#vc/129/indie","name":"indie","number":"129"},
+// {"link":"#vc/100/hit-list","name":"hit-list","number":"100"},
+// {"link":"#vc/133/pop-hits","name":"pop-hits","number":"133"},
+// {"link":"#vc/132/pop-country","name":"pop-country","number":"132"},
+// {"link":"#vc/118/teen-beats","name":"teen-beats","number":"118"},
+// {"link":"#vc/1104/music-choice-max","name":"music-choice-max","number":"1104"},
+// {"link":"#vc/127/danceedm","name":"danceedm","number":"127"},
+// {"link":"#vc/145/y2k","name":"y2k","number":"145"},
+// {"link":"#vc/140/90s","name":"90s","number":"140"},
+// {"link":"#vc/1113/80s","name":"80s","number":"1113"},
+// {"link":"#vc/1118/soft-rock","name":"soft-rock","number":"1118"},
+// {"link":"#vc/143/brits-hits","name":"brits-hits","number":"143"},
+// {"link":"#vc/123/pop-latino","name":"pop-latino","number":"123"},
+// {"link":"#vc/106/hiphop-and-rb","name":"hiphop-and-rb","number":"106"},
+// {"link":"#vc/125/rap","name":"rap","number":"125"},
+// {"link":"#vc/124/rb-soul","name":"rb-soul","number":"124"},
+// {"link":"#vc/142/throwback-jamz","name":"throwback-jamz","number":"142"},
+// {"link":"#vc/141/rap-2k","name":"rap-2k","number":"141"},
+// {"link":"#vc/138/rock","name":"rock","number":"138"},
+// {"link":"#vc/139/metal","name":"metal","number":"139"},
+// {"link":"#vc/130/kidz-only","name":"kidz-only","number":"130"},
+// {"link":"#vc/1105/kidz-bop","name":"kidz-bop","number":"1105"},
+// {"link":"#vc/176/learn-play","name":"learn-play","number":"176"},
+// {"link":"#vc/1110/family-hits","name":"family-hits","number":"1110"},
+// {"link":"#vc/144/toddler-tunes","name":"toddler-tunes","number":"144"},
   ];
 
     const browser = await p.launch({headless:true,
@@ -292,7 +347,7 @@ console.log("Getting channel links\n");
   page.on('request', async interceptedRequest => {
     if (interceptedRequest.url().includes("m3u8")) {
         console.log("request found "+index);
-         fs.writeFileSync("request.txt",interceptedRequest.url());
+         fs.writeFileSync("request.txt",interceptedRequest.url());         
          streamurl = interceptedRequest.url();
          console.log("Request intercepted="+streamurl);
          index++;
@@ -318,7 +373,9 @@ console.log("Getting channel links\n");
      console.log("Writing to M3U file"); 
     });
     writeM3Uline(number,n,n,streamurl);
-    
+    let cmd = generateRestreamCommand(streamurl,number,icehost,icecastlogin,icecastpass,port);
+    fs.appendFileSync("mc_to_icecast.sh",cmd);
+
   } catch (error) {
     console.log(error);
   }
