@@ -1,5 +1,5 @@
 {
-  "name": "MusicChoice for Channels",
+  "name": "music-choice-m3u-generator",
   "version": "0.0.2",
   "description": "M3u generator for DirecTV customers for MusicChoice stations",
   "main": "app.js",
