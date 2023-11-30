@@ -1,29 +1,27 @@
-const fs = require('fs');
-const axios = require('axios');
-const p = require('puppeteer');
-const util = require('util');
-const { command } = require('yargs');
-const sleep = util.promisify(setTimeout);
+import { appendFileSync, writeFileSync } from 'fs';
+import { launch } from 'puppeteer';
+import { promisify } from 'util';
+const sleep = promisify(setTimeout);
 require('dotenv').config();
 
 
 
 function writeM3Uline(channelnumber,tvguideid,channelname,streamurl) {
 str = "#EXTINF:-1 tvg-chno=\""+channelnumber+"\" grouptitle='Music Choice' tvg-id=\""+tvguideid+"\" tvc-guide-title=\""+tvguideid+"\" channel-id=\""+channelname+"\","+channelname+"\n";
-fs.appendFileSync("musicchoice.m3u",str);
-fs.appendFileSync("musicchoice.m3u",streamurl+"\n"); 
+  appendFileSync("musicchoice.m3u",str);
+  appendFileSync("musicchoice.m3u",streamurl+"\n"); 
 
 }
-function generateRestreamCommand(streamurl,channelnumber,icehost,iceuser,icepass,iceport) {
-  var command = "ffmpeg -re -i "+streamurl+"-map 0:2 -c:a copy -content-type \"audio/aac\" -f adts icecast://"+iceuser+":"+icepass+"@"+icehost+":"+iceport+"/mc"+channelnumber+".aac & \n";
-  command = command.replace("&","\&");
-  command = command.replace("=","\=");
-  return command;
-}
+// function generateRestreamCommand(streamurl,channelnumber,icehost,iceuser,icepass,iceport) {
+//   var command = "ffmpeg -re -i "+streamurl+"-map 0:2 -c:a copy -content-type \"audio/aac\" -f adts icecast://"+iceuser+":"+icepass+"@"+icehost+":"+iceport+"/mc"+channelnumber+".aac & \n";
+//   command = command.replace("&","\&");
+//   command = command.replace("=","\=");
+//   return command;
+// }
 
 
 (async () => {
-fs.writeFileSync("musicchoice.m3u","#EXTM3U\n");
+  writeFileSync("musicchoice.m3u","#EXTM3U\n");
 
 let dtvemail = process.env.dtvemail;
 let dtvpass = process.env.dtvpass;
@@ -321,7 +319,7 @@ let baseplayerurl = "https://webplayer.musicchoice.com/?_branch_match_id=7529949
 // {"link":"#vc/144/toddler-tunes","name":"toddler-tunes","number":"144"},
   ];
 
-    const browser = await p.launch({headless:true,
+    const browser = await launch({headless: "new" , 
         executablePath: '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
     });
     const page = await browser.newPage();
@@ -347,7 +345,7 @@ console.log("Getting channel links\n");
   page.on('request', async interceptedRequest => {
     if (interceptedRequest.url().includes("m3u8")) {
         console.log("request found "+index);
-         fs.writeFileSync("request.txt",interceptedRequest.url());         
+         writeFileSync("request.txt",interceptedRequest.url());         
          streamurl = interceptedRequest.url();
          console.log("Request intercepted="+streamurl);
          index++;
@@ -374,7 +372,7 @@ console.log("Getting channel links\n");
     });
     writeM3Uline(number,n,n,streamurl);
     let cmd = generateRestreamCommand(streamurl,number,icehost,icecastlogin,icecastpass,port);
-    fs.appendFileSync("mc_to_icecast.sh",cmd);
+    appendFileSync("mc_to_icecast.sh",cmd);
 
   } catch (error) {
     console.log(error);
