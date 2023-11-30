@@ -4,8 +4,9 @@ Playlist generator of MusicChoice channels for using with VLC or Channels DVR.Th
 version. 
 
 TODO:
-[x] Fix capturing network url requests
-- Find another URL for TVE authorisation simulating mobile device
+[ ] Capturing correct network url requests
+[ ] Find another URL for TVE authorisation simulating mobile device
+[ ] Rewrite using non-vulnerable dependencies
 
 Limitations:
 - All links are valid only for ~4 hours
