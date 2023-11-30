@@ -9,15 +9,9 @@
   "keywords": [],
   "author": "Sebastian Szwarc",
   "license": "ISC",
-  "devDependencies": {
-    "axios": "^1.6.2",
-    "cheerio": "^1.0.0-rc.12",
-    "yargs": "^17.7.2",
-    "zombie": "^6.1.4"
-  },
+  "devDependencies": {},
   "dependencies": {
     "dotenv": "^16.3.1",
-    "puppeteer": "^21.5.2",
-    "unirest": "^0.6.0"
+    "puppeteer": "^21.5.2"
   }
 }
