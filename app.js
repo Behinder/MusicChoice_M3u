@@ -372,8 +372,8 @@ console.log("Getting channel links\n");
      console.log("Writing to M3U file"); 
     });
     writeM3Uline(number,n,n,streamurl);
-    let cmd = generateRestreamCommand(streamurl,number,icehost,icecastlogin,icecastpass,port);
-    appendFileSync("mc_to_icecast.sh",cmd);
+    // let cmd = generateRestreamCommand(streamurl,number,icehost,icecastlogin,icecastpass,port);
+    // appendFileSync("mc_to_icecast.sh",cmd);
 
   } catch (error) {
     console.log(error);
