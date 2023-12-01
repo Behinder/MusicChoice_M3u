@@ -2,12 +2,13 @@ import { appendFileSync, writeFileSync } from 'fs';
 import { launch } from 'puppeteer';
 import { promisify } from 'util';
 const sleep = promisify(setTimeout);
-require('dotenv').config();
+import dotenv from 'dotenv'
+dotenv.config();
 
 
 
 function writeM3Uline(channelnumber,tvguideid,channelname,streamurl) {
-str = "#EXTINF:-1 tvg-chno=\""+channelnumber+"\" grouptitle='Music Choice' tvg-id=\""+tvguideid+"\" tvc-guide-title=\""+tvguideid+"\" channel-id=\""+channelname+"\","+channelname+"\n";
+    str = "#EXTINF:-1 tvg-chno=\""+channelnumber+"\" grouptitle='Music Choice' tvg-id=\""+tvguideid+"\" tvc-guide-title=\""+tvguideid+"\" channel-id=\""+channelname+"\","+channelname+"\n";
   appendFileSync("musicchoice.m3u",str);
   appendFileSync("musicchoice.m3u",streamurl+"\n"); 
 
